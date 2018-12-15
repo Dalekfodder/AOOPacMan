@@ -1,9 +1,14 @@
-class Character:
+from abc import ABC, abstractmethod
+
+class Character(ABC):
     def __init__(self):
         self.speed = 0
 
+    @abstractmethod
     def can_move(self):
-        pass
+        raise NotImplementedError("Missing can_move Implementation.")
 
+    @abstractmethod
     def move(self, direction):
-        pass
+        raise NotImplementedError("Missing move Implementation.")
+

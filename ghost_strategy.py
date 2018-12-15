@@ -1,14 +1,22 @@
-class ChaseBehaviour:
+from abc import ABC, abstractmethod
+
+class ChaseBehaviour(ABC):
+
+    @abstractmethod
     def chase(self):
         raise NotImplementedError("Missing Chase Implementation.")
 
 
-class ScatterBehaviour:
+class ScatterBehaviour(ABC):
+
+    @abstractmethod
     def scatter(self):
         raise NotImplementedError("Missing Scatter Implementation.")
 
 
-class FrigtenedBehaviour:
+class FrigtenedBehaviour(ABC):
+
+    @abstractmethod
     def frightened(self):
         raise NotImplementedError("Missing Frightened Implementation.")
 
