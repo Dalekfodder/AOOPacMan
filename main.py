@@ -2,10 +2,14 @@ import os, sys
 import pygame
 from pygame.locals import *
 
+WINDOWSIZE = (650, 600)
+FPS = 60        # frames per second
+YELLOW = (255, 255, 0)
+
 if not pygame.font: print ('Warning, fonts disabled')
 if not pygame.mixer: print ('Warning, sound disabled')
 
 pygame.init()
-screen = pygame.display.set_mode((468, 60))
-pygame.display.set_caption('Monkey Fever')
-pygame.mouse.set_visible(0)
+
+wSurface = pygame.display.set_mode (WINDOWSIZE, 0, 32)
+pygame.display.set_caption ("Pacman")
