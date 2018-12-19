@@ -8,9 +8,3 @@ class Ghost(Character):
         self.chase_behaviour = chase_behaviour
         self.scatter_behaviour = scatter_behaviour
         self.frightened_behaviour = frightened_behaviour
-
-
-class BlueGhost(Ghost):
-    def __init__(self):
-        super().__init__()
-
