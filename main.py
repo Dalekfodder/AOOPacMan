@@ -6,6 +6,7 @@ import pygame
 from block import Block
 from ghost import *
 from pac_man import PacMan
+from wall import Wall
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -31,17 +32,6 @@ monster_height = (4 * 60) + 19  # Monster height
 blinky_height = (3 * 60) + 19  # Binky height
 inky_width = 303 - 16 - 32  # Inky width
 clyde_width = 303 + (32 - 16)  # Clyde width
-
-
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color):
-        pygame.sprite.Sprite.__init__(self)
-
-        self.image = pygame.Surface([width, height])
-        self.image.fill(color)
-        self.rect = self.image.get_rect()
-        self.rect.top = y
-        self.rect.left = x
 
 
 def setup_room_one(all_sprites_list):
@@ -123,6 +113,7 @@ def setup_monsters(all_sprites_list, monster_list):
 
     return Blinky, Pinky, Inky, Clyde
 
+
 def setup_blocks(all_sprites_list, wall_list, pacman_collide):
     block_list = pygame.sprite.RenderPlain()
 
@@ -170,11 +161,11 @@ def start_game():
 
     score = 0
 
-    game_over = False
-    while not game_over:
+    is_game_over = False
+    while not is_game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_over = True
+                is_game_over = True
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -211,17 +202,54 @@ def start_game():
         monster_list.draw(screen)
 
         if score == bll:
-            game_over = True
+            is_game_over = True
 
         monster_hit_list = pygame.sprite.spritecollide(pac_man, monster_list, False)
 
         if monster_hit_list:
-            game_over = True
+            game_over("Game Over", 235, all_sprites_list, block_list, monster_list, pacman_collide, wall_list, gate)
 
         pygame.display.flip()
 
         clock.tick(10)
 
+def game_over(message, left, all_sprites_list, block_list, monsta_list, pacman_collide, wall_list, gate):
+    pygame.font.init()
+    font = pygame.font.Font("freesansbold.ttf", 24)
+    while True:
+          for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if event.type == pygame.KEYDOWN:
+              if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                return
+              if event.key == pygame.K_RETURN:
+                del all_sprites_list
+                del block_list
+                del monsta_list
+                del pacman_collide
+                del wall_list
+                del gate
+                start_game()
+
+          w = pygame.Surface((400,200))  # the size of your rect
+          w.set_alpha(10)                # alpha level
+          w.fill((128,128,128))           # this fills the entire surface
+          screen.blit(w, (100,200))    # (0,0) are the top-left coordinates
+
+          text1=font.render(message, True, white)
+          screen.blit(text1, [left, 233])
+
+          text2=font.render("To play again, press ENTER.", True, white)
+          screen.blit(text2, [135, 303])
+          text3=font.render("To quit, press ESCAPE.", True, white)
+          screen.blit(text3, [165, 333])
+
+          pygame.display.flip()
+
+    clock.tick(10)
 
 start_game()
 
