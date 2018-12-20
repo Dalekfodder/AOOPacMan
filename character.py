@@ -1,14 +1,56 @@
-from abc import ABC, abstractmethod
+import pygame
 
-class Character(ABC):
-    def __init__(self):
-        self.speed = 0
 
-    @abstractmethod
-    def can_move(self):
-        raise NotImplementedError("Missing can_move Implementation.")
+class Character(pygame.sprite.Sprite):
+    # Set speed vector
+    change_x = 0
+    change_y = 0
 
-    @abstractmethod
-    def move(self, direction):
-        raise NotImplementedError("Missing move Implementation.")
+    # Constructor function
+    def __init__(self, filename, x, y):
+        pygame.sprite.Sprite.__init__(self)
 
+        self.image = pygame.image.load(filename).convert()
+
+        self.rect = self.image.get_rect()
+        self.rect.top = y
+        self.rect.left = x
+        self.prev_x = x
+        self.prev_y = y
+
+    # Clear the speed of the player
+    def prevdirection(self):
+        self.prev_x = self.change_x
+        self.prev_y = self.change_y
+
+    # Change the speed of the player
+    def changespeed(self, x, y):
+        self.change_x += x
+        self.change_y += y
+
+    # Find a new position for the player
+    def update(self, walls, gate):
+
+        old_x = self.rect.left
+        new_x = old_x + self.change_x
+        prev_x = old_x + self.prev_x
+        self.rect.left = new_x
+
+        old_y = self.rect.top
+        new_y = old_y + self.change_y
+        prev_y = old_y + self.prev_y
+
+        x_collide = pygame.sprite.spritecollide(self, walls, False)
+        if x_collide:
+            self.rect.left = old_x
+        else:
+            self.rect.top = new_y
+            y_collide = pygame.sprite.spritecollide(self, walls, False)
+            if y_collide:
+                self.rect.top = old_y
+
+        if gate != False:
+            gate_hit = pygame.sprite.spritecollide(self, gate, False)
+            if gate_hit:
+                self.rect.left = old_x
+                self.rect.top = old_y

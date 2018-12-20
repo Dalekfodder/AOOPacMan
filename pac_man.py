@@ -10,8 +10,9 @@ class PacMan(Character):
             PacMan()
         return PacMan.__instance
 
-    def __init__(self):
+    def __init__(self, image, x, y):
         if PacMan.__instance != None:
             raise Exception("What the heck?")
         else:
             PacMan.__instance = self
+        super().__init__(image, x, y)
