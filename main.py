@@ -93,7 +93,11 @@ def setup_gate(all_sprites_list):
     return gate
 
 
+
+
+
 def setup_monsters(all_sprites_list, monster_list):
+
     Blinky = Ghost("images/Blinky.png", width, blinky_height, ChaseAggresive, ScatterBottomLeft)
     monster_list.add(Blinky)
     Blinky.current_behaviour = ChaseAggresive()
