@@ -94,6 +94,9 @@ def setup_gate(all_sprites_list):
     return gate
 
 
+
+
+
 def setup_monsters(all_sprites_list, monster_list):
     Blinky = ConcreteBlinky(width, blinky_height)
 
