@@ -1,7 +1,6 @@
 from character import Character
 from ghost_strategy import *
 
-from abc import ABC, abstractclassmethod
 
 class Ghost(Character):
     def __init__(self, image, x, y, chase_behaviour, scatter_behaviour):
@@ -20,21 +19,21 @@ class Ghost(Character):
     def perform_frightened(self):
         self.frightened_behaviour.frightened()
 
-class Blinky(Ghost):
-    def __init__(self, image, x, y):
-        super().__init__(image, x, y, ChaseAggresive, ScatterTopRight)
+class ConcreteBlinky(Ghost):
+    def __init__(self, x, y):
+        super().__init__("images/Blinky.png", x, y, ChaseAggresive, ScatterTopRight)
 
-class Pinky(Ghost):
-    def __init__(self, image, x, y):
-        super().__init__(image, x, y, ChaseAmbush, ScatterTopLeft)
+class ConcretePinky(Ghost):
+    def __init__(self, x, y):
+        super().__init__("images/Pinky.png", x, y, ChaseAmbush, ScatterTopLeft)
 
-class Inky(Ghost):
-    def __init__(self, image, x, y):
-        super().__init__(image, x, y, ChasePatrol, ScatterBottomRight)
+class ConcreteInky(Ghost):
+    def __init__(self, x, y):
+        super().__init__("images/Inky.png", x, y, ChasePatrol, ScatterBottomRight)
 
-class Clyde(Ghost):
-    def __init__(self, image, x, y):
-        super().__init__(image, x, y, RandomChase, ScatterBottomLeft)
+class ConcreteClyde(Ghost):
+    def __init__(self, x, y):
+        super().__init__("images/Clyde.png", x, y, RandomChase, ScatterBottomLeft)
 
 
 

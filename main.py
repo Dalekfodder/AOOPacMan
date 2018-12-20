@@ -1,5 +1,6 @@
 # Pacman in Python with PyGame
 # https://github.com/hbokmann/Pacman
+import sys
 
 import pygame
 
@@ -94,24 +95,16 @@ def setup_gate(all_sprites_list):
 
 
 def setup_monsters(all_sprites_list, monster_list):
-    Blinky = Ghost("images/Blinky.png", width, blinky_height, ChaseAggresive, ScatterBottomLeft)
-    monster_list.add(Blinky)
-    Blinky.current_behaviour = ChaseAggresive()
-    all_sprites_list.add(Blinky)
+    Blinky = ConcreteBlinky(width, blinky_height)
 
-    Pinky = Ghost("images/Pinky.png", width, monster_height, ChaseAmbush, ScatterBottomRight)
-    monster_list.add(Pinky)
-    all_sprites_list.add(Pinky)
+    Pinky = ConcretePinky(width, monster_height)
 
-    Inky = Ghost("images/Inky.png", inky_width, monster_height, ChasePatrol, ScatterTopRight)
-    monster_list.add(Inky)
-    all_sprites_list.add(Inky)
+    Inky = ConcreteInky(inky_width, monster_height)
 
-    Clyde = Ghost("images/Clyde.png", clyde_width, monster_height, RandomChase, ScatterTopLeft)
-    monster_list.add(Clyde)
-    all_sprites_list.add(Clyde)
+    Clyde = ConcreteClyde(clyde_width, monster_height)
 
-    return Blinky, Pinky, Inky, Clyde
+    all_sprites_list.add(Blinky, Pinky, Inky, Clyde)
+    monster_list.add(Blinky, Pinky, Inky, Clyde)
 
 
 def setup_blocks(all_sprites_list, wall_list, pacman_collide):
@@ -140,24 +133,22 @@ def setup_blocks(all_sprites_list, wall_list, pacman_collide):
     return block_list, len(block_list)
 
 
+pac_man = PacMan()
+
+
 def start_game():
     all_sprites_list = pygame.sprite.RenderPlain()
-
     monster_list = pygame.sprite.RenderPlain()
-
     pacman_collide = pygame.sprite.RenderPlain()
 
-    wall_list = setup_room_one(all_sprites_list)
-
+    walls = setup_room_one(all_sprites_list)
     gate = setup_gate(all_sprites_list)
+    setup_monsters(all_sprites_list, monster_list)
 
-    Blinky, Pinky, Inky, Clyde = setup_monsters(all_sprites_list, monster_list)
+    all_sprites_list.add(pac_man.get_pacman())
+    pacman_collide.add(pac_man.get_pacman())
 
-    pac_man = PacMan("images/pacman.png", width, pacman_height)
-    all_sprites_list.add(pac_man)
-    pacman_collide.add(pac_man)
-
-    block_list, bll = setup_blocks(all_sprites_list, wall_list, pacman_collide)
+    block_list, bll = setup_blocks(all_sprites_list, walls, pacman_collide)
 
     score = 0
 
@@ -187,7 +178,7 @@ def start_game():
                 if event.key == pygame.K_DOWN:
                     pac_man.changespeed(0, -30)
 
-        pac_man.update(wall_list, gate)
+        pac_man.update(walls, gate)
 
         blocks_hit_list = pygame.sprite.spritecollide(pac_man, block_list, True)
 
@@ -196,7 +187,7 @@ def start_game():
 
         screen.fill(black)
 
-        wall_list.draw(screen)
+        walls.draw(screen)
         gate.draw(screen)
         all_sprites_list.draw(screen)
         monster_list.draw(screen)
@@ -207,49 +198,50 @@ def start_game():
         monster_hit_list = pygame.sprite.spritecollide(pac_man, monster_list, False)
 
         if monster_hit_list:
-            game_over("Game Over", 235, all_sprites_list, block_list, monster_list, pacman_collide, wall_list, gate)
+            game_over("Game Over", 235, all_sprites_list, block_list, monster_list, pacman_collide, walls, gate)
 
         pygame.display.flip()
 
         clock.tick(10)
 
+
 def game_over(message, left, all_sprites_list, block_list, monsta_list, pacman_collide, wall_list, gate):
     pygame.font.init()
     font = pygame.font.Font("freesansbold.ttf", 24)
     while True:
-          for event in pygame.event.get():
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                return
+                sys.exit()
             if event.type == pygame.KEYDOWN:
-              if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                return
-              if event.key == pygame.K_RETURN:
-                del all_sprites_list
-                del block_list
-                del monsta_list
-                del pacman_collide
-                del wall_list
-                del gate
-                start_game()
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                if event.key == pygame.K_RETURN:
+                    del all_sprites_list
+                    del block_list
+                    del monsta_list
+                    del pacman_collide
+                    del wall_list
+                    del gate
+                    start_game()
 
-          w = pygame.Surface((400,200))  # the size of your rect
-          w.set_alpha(10)                # alpha level
-          w.fill((128,128,128))           # this fills the entire surface
-          screen.blit(w, (100,200))    # (0,0) are the top-left coordinates
+        w = pygame.Surface((400, 200))  # the size of your rect
+        w.set_alpha(10)  # alpha level
+        w.fill((128, 128, 128))  # this fills the entire surface
+        screen.blit(w, (100, 200))  # (0,0) are the top-left coordinates
 
-          text1=font.render(message, True, white)
-          screen.blit(text1, [left, 233])
+        text1 = font.render(message, True, white)
+        screen.blit(text1, [left, 233])
 
-          text2=font.render("To play again, press ENTER.", True, white)
-          screen.blit(text2, [135, 303])
-          text3=font.render("To quit, press ESCAPE.", True, white)
-          screen.blit(text3, [165, 333])
+        text2 = font.render("To play again, press ENTER.", True, white)
+        screen.blit(text2, [135, 303])
+        text3 = font.render("To quit, press ESCAPE.", True, white)
+        screen.blit(text3, [165, 333])
 
-          pygame.display.flip()
+        pygame.display.flip()
+        clock.tick(10)
 
-    clock.tick(10)
 
 start_game()
 
