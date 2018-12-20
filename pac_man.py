@@ -12,7 +12,8 @@ class PacMan(Character):
 
     def __init__(self, image, x, y):
         if PacMan.__instance != None:
-            raise Exception("What the heck?")
+            self.change_x = x
+            self.change_y = y
         else:
             PacMan.__instance = self
         super().__init__(image, x, y)
